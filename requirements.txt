@@ -6,3 +6,4 @@ matplotlib
 scikit-learn
 gunicorn
 opencv-python-headless
+reportlab

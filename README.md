@@ -1,5 +1,3 @@
-# DeepShield-AI
-AI-Powered Image and Phishing Detection System
 # 🛡️ DeepShield AI
 ### AI-Powered Image Authenticity & Phishing Detection System
 

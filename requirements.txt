@@ -1,4 +1,3 @@
-
 Flask
 tensorflow
 numpy
@@ -6,3 +5,4 @@ Pillow
 matplotlib
 scikit-learn
 gunicorn
+opencv-python-headless

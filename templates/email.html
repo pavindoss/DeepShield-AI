@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepShield AI | Email Detection</title>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef6ff, #f8fbff);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.06);
+        }
+
+        .logo { width: 45px; height: 45px; object-fit: contain; }
+        header h1 { color: #0f4c81; font-size: 23px; }
+        header p { color: #64748b; font-size: 12px; margin-top: 4px; }
+
+        .container { width: 90%; max-width: 850px; margin: 45px auto; }
+
+        .back {
+            display: inline-block;
+            color: #0f4c81;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .heading { text-align: center; margin-bottom: 30px; }
+        .heading h2 { color: #0f4c81; font-size: 31px; margin-bottom: 12px; }
+        .heading p { color: #64748b; line-height: 1.6; }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(15,76,129,.08);
+        }
+
+        label {
+            display: block;
+            color: #0f4c81;
+            font-weight: 600;
+            margin: 20px 0 9px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbdced;
+            border-radius: 10px;
+            font: inherit;
+            color: #1e293b;
+            background: #fbfdff;
+        }
+
+        textarea { min-height: 190px; resize: vertical; line-height: 1.5; }
+
+        input:focus, textarea:focus {
+            outline: 2px solid #9ec5e5;
+            border-color: #0f4c81;
+        }
+
+        .hint { color: #64748b; font-size: 13px; margin-top: 8px; }
+
+        button {
+            margin-top: 24px;
+            padding: 14px 25px;
+            width: 100%;
+            border: none;
+            border-radius: 11px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #0f4c81, #087fbd);
+            cursor: pointer;
+        }
+
+        button:hover { opacity: .93; }
+
+        .notice {
+            background: #fff8e6;
+            color: #854d0e;
+            border: 1px solid #fde68a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 22px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .container { width: 92%; margin: 30px auto; }
+            .card { padding: 22px; }
+            .heading h2 { font-size: 26px; }
+        }
+
+        
+/* Centered email analysis report */
+.analysis-result {
+  width: 100%;
+  max-width: 820px;
+  margin: 36px auto 48px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  scroll-margin-top: 24px;
+}
+
+.result-card {
+  background: #ffffff;
+  border: 1px solid #dbe7f5;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 14px 40px rgba(25, 75, 130, 0.10);
+  color: #17365d;
+  font-family: Arial, sans-serif;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e7eef8;
+}
+
+.result-eyebrow {
+  color: #087dbb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.result-header h2 {
+  margin: 8px 0 0;
+  font-size: 25px;
+  color: #124b83;
+}
+
+.result-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  background: #eaf4ff;
+  border-radius: 16px;
+  font-size: 26px;
+}
+
+.risk-summary {
+  margin-top: 22px;
+  padding: 20px;
+  background: #f4f8fd;
+  border-radius: 14px;
+}
+
+.risk-label {
+  color: #637995;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.risk-summary h3 {
+  margin: 9px 0;
+  font-size: 21px;
+  color: #174f86;
+}
+
+.risk-summary p {
+  margin: 0;
+  color: #6b7f98;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.score-section {
+  margin-top: 26px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.score-row strong {
+  font-size: 23px;
+  color: #124b83;
+}
+
+.score-row small {
+  font-size: 13px;
+  color: #71839a;
+}
+
+.score-track {
+  height: 10px;
+  overflow: hidden;
+  background: #e7edf5;
+  border-radius: 20px;
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+.risk-high { background: #dc4545; }
+.risk-medium { background: #e8a12a; }
+.risk-low { background: #1b9a73; }
+
+.score-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  color: #8190a4;
+  font-size: 11px;
+}
+
+.findings-section {
+  margin-top: 28px;
+}
+
+.findings-section h4 {
+  margin: 0 0 14px;
+  font-size: 17px;
+  color: #173f6b;
+}
+
+.findings-list {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.findings-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafd;
+  border: 1px solid #e8eef6;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.finding-mark {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e4effc;
+  color: #175e9a;
+  font-weight: 700;
+}
+
+.result-disclaimer {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-left: 4px solid #78a9d8;
+  background: #f0f6fc;
+  border-radius: 8px;
+  color: #526b86;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.error-card {
+  border-color: #f0caca;
+}
+
+@media (max-width: 600px) {
+  .analysis-result {
+    margin-top: 24px;
+    padding: 0 12px;
+  }
+
+  .result-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .result-header h2 {
+    font-size: 21px;
+  }
+
+  .risk-summary h3 {
+    font-size: 18px;
+  }
+}
+
+
+/* Email history section */
+.history-section {
+    width: 100%;
+    margin: 40px auto;
+    padding: 28px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 76, 129, 0.08);
+    overflow-x: auto;
+}
+
+.history-section h2 {
+    color: #0f4c81;
+    margin-bottom: 10px;
+}
+
+.history-section p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+.history-table th,
+.history-table td {
+    padding: 13px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.history-table th {
+    background: #0f4c81;
+    color: white;
+}
+
+.history-table tr:nth-child(even) {
+    background: #f1f7fd;
+}
+
+.download-btn {
+    display: inline-block;
+    margin: 0 0 22px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #0f4c81, #087fbd);
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.download-btn:hover {
+    opacity: 0.9;
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}"
+             class="logo" alt="DeepShield AI Logo">
+        <div>
+            <h1>DeepShield AI</h1>
+            <p>AI-Powered Digital Threat Detection</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <a class="back" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+
+        <section class="heading">
+            <h2>✉️ Fake Email Detection</h2>
+            <p>Enter an email's details to check for potential phishing indicators.</p>
+        </section>
+
+        <section class="card">
+            <form method="POST" action="{{ url_for('email_detection') }}">
+                <label for="sender">Sender Email (optional)</label>
+                <input type="text" id="sender" name="sender"
+                       placeholder="example@domain.com"
+                       value="{{ request.form.get('sender', '') }}">
+
+                <label for="subject">Email Subject (optional)</label>
+                <input type="text" id="subject" name="subject"
+                       placeholder="Enter the email subject"
+                       value="{{ request.form.get('subject', '') }}">
+
+                <label for="content">Email Content</label>
+                <textarea id="content" name="content" required
+                          placeholder="Paste the email message here...">{{ request.form.get('content', '') }}</textarea>
+
+
+<label for="headers">Email Headers (Optional)</label>
+<textarea
+    id="headers"
+    name="headers"
+    rows="5"
+    placeholder="Paste the original email headers here..."
+>{{ headers or '' }}</textarea>
+<p class="hint">
+    Optional: Paste original email headers to inspect reported SPF, DKIM and DMARC results.
+</p>
+
+
+
+
+                <p class="hint">Avoid including passwords, private information, or sensitive personal data.</p>
+
+                <button type="submit">Analyze Email</button>
+            </form>
+
+        </section>
+    </main>
+
+    <footer>© 2026 DeepShield AI — Email Threat Analysis</footer>
+
+
+
+{% if result %}
+<section class="analysis-result">
+  {% if result.error %}
+    <div class="result-card error-card">
+      <h3>Analysis Error</h3>
+      <p>{{ result.error }}</p>
+    </div>
+  {% else %}
+    <div class="result-card">
+      <div class="result-header">
+        <div>
+          <span class="result-eyebrow">DEEPSHIELD AI REPORT</span>
+          <h2>Email Analysis Result</h2>
+        </div>
+        <span class="result-icon">🛡️</span>
+      </div>
+
+      <div class="risk-summary">
+        <span class="risk-label">Risk Assessment</span>
+        <h3>{{ result.result }}</h3>
+        <p>Heuristic analysis based on detected warning patterns</p>
+      </div>
+
+      <div class="score-section">
+        <div class="score-row">
+          <span>Heuristic Risk Score</span>
+          <strong>{{ result.score }}<small>/100</small></strong>
+        </div>
+        <div class="score-track">
+          <div class="score-fill
+            {% if result.score >= 50 %}risk-high
+            {% elif result.score >= 25 %}risk-medium
+            {% else %}risk-low{% endif %}"
+            style="width: {{ result.score }}%">
+          </div>
+        </div>
+        <div class="score-scale">
+          <span>Lower indicators</span>
+          <span>Higher indicators</span>
+        </div>
+      </div>
+
+      {% if result.authentication %}
+      <div class="findings-section">
+        <h4>Email Authentication Results</h4>
+        <p class="hint">Reported results from the supplied email headers:</p>
+
+        <ul class="findings-list">
+          {% for name, status in result.authentication.items() %}
+          <li>
+            <span class="finding-mark">i</span>
+            <span><strong>{{ name }}:</strong> {{ status }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <p class="hint">
+          These statuses are parsed from supplied headers and are not
+          independently verified. Headers can be forged.
+        </p>
+      </div>
+      {% endif %}
+
+      <div class="findings-section">
+        <h4>Analysis Findings</h4>
+        <ul class="findings-list">
+          {% for finding in result.findings %}
+            <li>
+              <span class="finding-mark">!</span>
+              <span>{{ finding }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="result-disclaimer">
+        <strong>Important:</strong>
+        This rule-based score is an estimate, not proof of phishing
+        or safety. Verify suspicious messages independently.
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endif %}
+
+
+
+<section class="container">
+    <div class="history-section">
+        <h2>📋 Email Analysis History</h2>
+        <p>Your 10 most recent email analysis records.</p>
+
+        <a href="{{ url_for('download_email_history') }}"
+           class="download-btn">
+            📄 Download History Report (PDF)
+        </a>
+
+        {% if email_history %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Subject</th>
+                    <th>Risk Score</th>
+                    <th>Status</th>
+                    <th>Analyzed At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in email_history %}
+                <tr>
+                    <td>{{ item.sender or 'Not provided' }}</td>
+                    <td>{{ item.subject or 'No subject' }}</td>
+                    <td>{{ item.score }}/100</td>
+                    <td>{{ item.status }}</td>
+                    <td>{{ item.time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No email analysis history available yet. Analyze an email to get started.</p>
+        {% endif %}
+    </div>
+</section>
+
+</body>
+</html>
+```

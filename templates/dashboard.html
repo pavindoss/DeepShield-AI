@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepShield AI | Dashboard</title>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef6ff, #f8fbff);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.06);
+        }
+
+        .logo { width: 45px; height: 45px; object-fit: contain; }
+
+        header h1 { color: #0f4c81; font-size: 24px; }
+        header p { color: #64748b; font-size: 12px; margin-top: 4px; }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 55px auto;
+        }
+
+        .intro { text-align: center; margin-bottom: 38px; }
+        .intro h2 { color: #0f4c81; font-size: 34px; margin-bottom: 12px; }
+        .intro p { color: #64748b; line-height: 1.6; }
+
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0ebf7;
+            border-radius: 20px;
+            padding: 28px 22px;
+            box-shadow: 0 10px 30px rgba(15,76,129,.08);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(15,76,129,.14);
+        }
+
+        .icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: #eaf4ff;
+            display: grid;
+            place-items: center;
+            font-size: 29px;
+            margin-bottom: 22px;
+        }
+
+        .card h3 { color: #0f4c81; font-size: 20px; margin-bottom: 12px; }
+        .card p { color: #64748b; line-height: 1.6; font-size: 14px; flex: 1; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px 15px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 11px;
+            color: white;
+            font-weight: 600;
+            background: linear-gradient(135deg, #0f4c81, #087fbd);
+            transition: .2s;
+        }
+
+        .btn:hover { box-shadow: 0 8px 18px rgba(15,76,129,.2); }
+
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .modules { grid-template-columns: 1fr; }
+            .container { width: 92%; margin: 35px auto; }
+            .intro h2 { font-size: 28px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}"
+             class="logo" alt="DeepShield AI Logo">
+        <div>
+            <h1>DeepShield AI</h1>
+            <p>AI-Powered Digital Threat Detection</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="intro">
+            <h2>Welcome to DeepShield AI</h2>
+            <p>Choose a detection module to analyze suspicious digital content.</p>
+        </section>
+
+        <section class="modules">
+            <article class="card">
+                <div class="icon">🖼️</div>
+                <h3>AI Image Detection</h3>
+                <p>Analyze an image to estimate whether it is AI-generated or real. View prediction scores and visual analysis.</p>
+                <a class="btn" href="{{ url_for('index') }}">Open Image Detection →</a>
+            </article>
+
+            <article class="card">
+                <div class="icon">✉️</div>
+                <h3>Fake Email Detection</h3>
+                <p>Examine suspicious emails for phishing indicators, misleading links and potentially unsafe messages.</p>
+                <a class="btn" href="{{ url_for('email_detection') }}">Open Email Detection →</a>
+            </article>
+
+            <article class="card">
+                <div class="icon">🌐</div>
+                <h3>Fake Website Detection</h3>
+                <p>Check website URLs for suspicious patterns and potential phishing indicators.</p>
+                <a class="btn" href="{{ url_for('website_detection') }}">Open Website Detection →</a>
+            </article>
+        </section>
+    </main>
+
+    <footer>© 2026 DeepShield AI — Digital Threat Detection Platform</footer>
+</body>
+</html>
+```

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+dataset/
+*.pyc
+prediction_history.json
+gradcam_heatmap.jpg
+gradcam_result.jpg
+test_image.jpg
+static/uploads/
+static/gradcam/
+static/reports/

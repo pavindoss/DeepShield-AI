@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepShield AI | Website Detection</title>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef6ff, #f8fbff);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.06);
+        }
+
+        .logo { width: 45px; height: 45px; object-fit: contain; }
+        header h1 { color: #0f4c81; font-size: 23px; }
+        header p { color: #64748b; font-size: 12px; margin-top: 4px; }
+
+        .container { width: 90%; max-width: 850px; margin: 45px auto; }
+
+        .back {
+            display: inline-block;
+            color: #0f4c81;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .heading { text-align: center; margin-bottom: 30px; }
+        .heading h2 { color: #0f4c81; font-size: 31px; margin-bottom: 12px; }
+        .heading p { color: #64748b; line-height: 1.6; }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(15,76,129,.08);
+        }
+
+        label {
+            display: block;
+            color: #0f4c81;
+            font-weight: 600;
+            margin: 20px 0 9px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cbdced;
+            border-radius: 10px;
+            font: inherit;
+            background: #fbfdff;
+        }
+
+        input:focus {
+            outline: 2px solid #9ec5e5;
+            border-color: #0f4c81;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 9px;
+            line-height: 1.5;
+        }
+
+        button {
+            margin-top: 24px;
+            padding: 14px 25px;
+            width: 100%;
+            border: none;
+            border-radius: 11px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #0f4c81, #087fbd);
+            cursor: pointer;
+        }
+
+        button:hover { opacity: .93; }
+
+        
+.notice {
+    background: #f0f7ff;
+    color: #173f70;
+    border: 1px solid #c6ddf7;
+    padding: 24px;
+    border-radius: 14px;
+    margin-top: 22px;
+    line-height: 1.7;
+}
+
+.notice h3 {
+    font-size: 21px;
+    margin-bottom: 16px;
+    color: #0f4c81;
+}
+
+.notice h4 {
+    font-size: 16px;
+    color: #0f4c81;
+}
+
+.notice ul {
+    padding-left: 22px;
+}
+
+.notice li {
+    margin-bottom: 6px;
+}
+
+.notice p {
+    overflow-wrap: anywhere;
+}
+
+.risk-progress {
+    width: 100%;
+    height: 12px;
+    background: #dbe7f5;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 12px 0 18px;
+}
+
+.risk-progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+
+
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .container { width: 92%; margin: 30px auto; }
+            .card { padding: 22px; }
+            .heading h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}"
+             class="logo" alt="DeepShield AI Logo">
+        <div>
+            <h1>DeepShield AI</h1>
+            <p>AI-Powered Digital Threat Detection</p>
+        </div>
+    </header>
+
+
+
+    <main class="container">
+        <a class="back" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+
+        <section class="heading">
+            <h2>🌐 Fake Website Detection</h2>
+            <p>Enter a website URL to inspect it for potential phishing indicators.</p>
+        </section>
+
+        <section class="card">
+            <form method="POST" action="{{ url_for('website_detection') }}">
+                <label for="website_url">Website URL</label>
+                <input
+                    type="url"
+                    id="website_url"
+                    name="website_url"
+                    placeholder="https://example.com"
+                    value="{{ request.form.get('website_url', '') }}"
+                    required
+                >
+
+                <p class="hint">
+                    Enter the full URL, including https:// or http://.
+                    Do not enter passwords or other private information.
+                </p>
+
+                <button type="submit">Analyze Website</button>
+            </form>
+
+            
+{% if result %}
+    <div class="notice" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe;">
+        <h3>Website Analysis Result</h3>
+        <p style="margin-top:12px;"><strong>Risk Score:</strong> {{ result.score }}/100</p>
+        
+<div class="risk-progress">
+    <div class="risk-progress-fill"
+         style="width: {{ result.score }}%; background: {% if result.score >= 50 %}#dc2626{% elif result.score >= 25 %}#f59e0b{% else %}#16a34a{% endif %};">
+    </div>
+</div>
+
+        <p style="margin-top:8px;"><strong>Status:</strong> {{ result.result }}</p>
+
+{% if result %}
+    {% for finding in result.findings %}
+        {% if "URL-shortening service" in finding %}
+            <p style="margin-top:12px;">
+                <strong style="color:#b45309;">
+                    ⚠ Warning — Verify Destination
+                </strong>
+            </p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+        <h4 style="margin-top:18px;">Findings</h4>
+        <ul style="margin:10px 0 0 20px; line-height:1.8;">
+            {% for finding in result.findings %}
+                <li>{{ finding }}</li>
+            {% endfor %}
+        </ul>
+
+        <p style="margin-top:15px; font-size:13px;">
+            This score is based on configured URL patterns. It does not prove
+            that a website is safe or malicious.
+        </p>
+    </div>
+{% else %}
+    <div class="notice">
+        <strong>Note:</strong> Enter a website URL and select Analyze Website
+        to inspect its URL structure.
+    </div>
+{% endif %}
+
+        </section>
+
+    
+<section class="card" style="margin-top:25px;">
+    <h2 style="color:#0f4c81; margin-bottom:20px;">
+        Website Analysis History
+    </h2>
+
+    {% if website_history %}
+        <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                <thead>
+                    <tr style="background:#eaf3ff;">
+                        <th style="padding:12px;">Website URL</th>
+                        <th style="padding:12px;">Risk Score</th>
+                        <th style="padding:12px;">Status</th>
+                        <th style="padding:12px;">Analyzed At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in website_history %}
+                        <tr style="border-bottom:1px solid #dbe7f5;">
+                            <td style="padding:12px; overflow-wrap:anywhere;">
+                                {{ item.url }}
+                            </td>
+                            <td style="padding:12px;">{{ item.score }}/100</td>
+                            <td style="padding:12px;">{{ item.status }}</td>
+                            <td style="padding:12px;">{{ item.time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p style="color:#64748b;">
+            No website analyses yet. Analyze a URL to see it here.
+        </p>
+    {% endif %}
+    
+
+<a href="{{ url_for('download_website_history') }}"
+   style="display:inline-block; margin-bottom:18px; padding:10px 16px;
+          background:#0f4c81; color:white; text-decoration:none;
+          border-radius:8px; font-weight:600;">
+    📄 Download History Report (PDF)
+</a>
+
+
+</section>
+
+    </main>
+
+    <footer>© 2026 DeepShield AI — Website Threat Analysis</footer>
+</body>
+</html>
+```
